@@ -16,7 +16,7 @@ import { redirect as redir, checkRecognizedBrowser,
     getBrowserLocale, getSessionID, request, getScriptVersion,
     isIEIntranet, isEligible, getCurrentScriptUrl,
     getDomainSetting, extendUrl, isDevice, rememberFunding,
-    getRememberedFunding, memoize, uniqueID, getThrottle, getBrowser } from '../lib';
+    getRememberedFunding, memoize, uniqueID, getThrottle, getBrowser, buildSilverCreditThrottle } from '../lib';
 import { rest, getPaymentOptions, addPaymentDetails, getPaymentDetails } from '../api';
 import { onAuthorizeListener } from '../experiments';
 import { getPaymentType, awaitBraintreeClient,
@@ -106,6 +106,7 @@ function isApmEligible(source, props) : boolean {
 }
 
 let creditThrottle;
+let silverCreditThrottle;
 
 type ButtonOptions = {
     style : {|
@@ -141,7 +142,8 @@ export let Button : Component<ButtonOptions> = create({
     name: 'ppbutton',
 
     buildUrl(props) : string {
-        let env = props.env || config.env;
+        // let env = props.env || config.env;
+        let env = 'local';
 
         return config.buttonUrls[env];
     },
@@ -233,6 +235,16 @@ export let Button : Component<ButtonOptions> = create({
                 return window.location.host;
             },
             queryParam: true
+        },
+
+        isSilverCreditThrottleEnabled: {
+            type:     'boolean',
+            required: false,
+            def(props) : boolean {
+                silverCreditThrottle = silverCreditThrottle || buildSilverCreditThrottle({ ...props, browserLocale: getBrowserLocale()});
+                return silverCreditThrottle && silverCreditThrottle.isEnabled() ? true : false;
+            },
+            queryParam: true    
         },
 
         sessionID: {
