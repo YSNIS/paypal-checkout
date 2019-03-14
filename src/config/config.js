@@ -4,6 +4,7 @@
 import { ENV, COUNTRY, LANG } from '../constants';
 
 function getDefaultEnv() : $Values<typeof ENV> {
+
     if (__TEST__) {
         return ENV.TEST;
     }

@@ -1,12 +1,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <div id="paypal-button"></div>
 
-<script src="../dist/checkout.js"></script>
+<script src="../dist/checkout.js" data-paypal-checkout></script>
 
-<script>
+<script data-paypal-checkout>
     paypal.Button.render({
 
-        env: 'sandbox', // Optional: specify 'sandbox' environment
+        env: 'production', // Optional: specify 'sandbox' environment
 
         locale: 'en_US',
 
@@ -21,9 +21,10 @@
         },
 
         client: {
-            sandbox: 'AWi18rxt26-hrueMoPZ0tpGEOJnNT4QkiMQst9pYgaQNAfS1FLFxkxQuiaqRBj1vV5PmgHX_jA_c1ncL',
+            sandbox: 'Aco85QiB9jk8Q3GdsidqKVCXuPAAVbnqm0agscHCL2-K2Lu2L6MxDU2AwTZa-ALMn_N0z-s2MXKJBxqJ',
             stage: 'alc_client1',
-            local: 'alc_client1'
+            local: 'alc_client1',
+            production: 'Aco85QiB9jk8Q3GdsidqKVCXuPAAVbnqm0agscHCL2-K2Lu2L6MxDU2AwTZa-ALMn_N0z-s2MXKJBxqJ'
         },
 
         payment(data, actions) { 

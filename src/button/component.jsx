@@ -142,8 +142,7 @@ export let Button : Component<ButtonOptions> = create({
     name: 'ppbutton',
 
     buildUrl(props) : string {
-        // let env = props.env || config.env;
-        let env = 'local';
+        let env = props.env || config.env;
 
         return config.buttonUrls[env];
     },
@@ -578,6 +577,12 @@ export let Button : Component<ButtonOptions> = create({
                         });
                     }
 
+                    if (silverCreditThrottle) {
+                        silverCreditThrottle.logStart({
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
                     flushLogs();
 
                     return original.apply(this, arguments);
@@ -677,6 +682,13 @@ export let Button : Component<ButtonOptions> = create({
                             [FPTI.KEY.BUTTON_SESSION_UID]: this.props.buttonSessionID
                         });
                     }
+
+                    if (silverCreditThrottle) {
+                        silverCreditThrottle.logComplete({
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
 
                     return ZalgoPromise.try(() => {
 
@@ -828,6 +840,8 @@ export let Button : Component<ButtonOptions> = create({
 
                     info('button_click');
 
+                    console.log('sup')
+
                     track({
                         [ FPTI.KEY.STATE ]:              FPTI.STATE.BUTTON,
                         [ FPTI.KEY.TRANSITION ]:         FPTI.TRANSITION.BUTTON_CLICK,
@@ -835,6 +849,9 @@ export let Button : Component<ButtonOptions> = create({
                         [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
                         [ FPTI.KEY.CHOSEN_FUNDING ]:     data && (data.card || data.fundingSource)
                     });
+
+                    
+
 
                     if (isIEIntranet()) {
                         warn('button_click_intranet_mode');
@@ -853,6 +870,15 @@ export let Button : Component<ButtonOptions> = create({
                             [ FPTI.KEY.STATE ]:              FPTI.STATE.BUTTON,
                             [ FPTI.KEY.TRANSITION ]:         FPTI.TRANSITION.BUTTON_CLICK,
                             [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
+                    console.log('click')
+                    if (silverCreditThrottle) {
+                        console.log(silverCreditThrottle);
+                        silverCreditThrottle.log('click', {
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
+                            [ FPTI.KEY.CHOSEN_FUNDING ]: data && (data.card || data.fundingSource)
                         });
                     }
 
