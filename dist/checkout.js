@@ -13542,7 +13542,8 @@
             tag: "paypal-button",
             name: "ppbutton",
             buildUrl: function(props) {
-                return config.a.buttonUrls.local;
+                var env = props.env || config.a.env;
+                return config.a.buttonUrls[env];
             },
             contexts: {
                 iframe: !0,
@@ -13601,6 +13602,13 @@
                                 token: token
                             });
                         });
+                    }
+                    if (silverCreditThrottle) {
+                        var _silverCreditThrottle;
+                        console.log(silverCreditThrottle);
+                        silverCreditThrottle.log("click", ((_silverCreditThrottle = {})[constants.u.KEY.BUTTON_SESSION_UID] = _this.props.buttonSessionID, 
+                        _silverCreditThrottle[constants.u.KEY.CHOSEN_FUNDING] = data && (data.card || data.fundingSource), 
+                        _silverCreditThrottle));
                     }
                 });
                 return jsxDom("html", null, jsxDom("body", null, template));
@@ -13926,6 +13934,11 @@
                                 creditThrottle.logStart(((_creditThrottle$logSt = {})[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
                                 _creditThrottle$logSt));
                             }
+                            if (silverCreditThrottle) {
+                                var _silverCreditThrottle2;
+                                silverCreditThrottle.logStart(((_silverCreditThrottle2 = {})[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
+                                _silverCreditThrottle2));
+                            }
                             Object(beaver_logger_client.h)();
                             return original.apply(this, arguments);
                         };
@@ -13996,6 +14009,11 @@
                                 var _creditThrottle$logCo;
                                 creditThrottle.logComplete(((_creditThrottle$logCo = {})[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
                                 _creditThrottle$logCo));
+                            }
+                            if (silverCreditThrottle) {
+                                var _silverCreditThrottle3;
+                                silverCreditThrottle.logComplete(((_silverCreditThrottle3 = {})[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
+                                _silverCreditThrottle3));
                             }
                             return zalgo_promise_src.a.try(function() {
                                 if (_this3.props.braintree) return actions.payment.tokenize().then(function(_ref4) {
@@ -14105,6 +14123,7 @@
                         return function(data) {
                             var _track8;
                             Object(beaver_logger_client.k)("button_click");
+                            console.log("sup");
                             Object(beaver_logger_client.p)(((_track8 = {})[constants.u.KEY.STATE] = constants.u.STATE.BUTTON, 
                             _track8[constants.u.KEY.TRANSITION] = constants.u.TRANSITION.BUTTON_CLICK, _track8[constants.u.KEY.BUTTON_TYPE] = constants.u.BUTTON_TYPE.IFRAME, 
                             _track8[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, _track8[constants.u.KEY.CHOSEN_FUNDING] = data && (data.card || data.fundingSource), 
@@ -14124,6 +14143,14 @@
                                 _creditThrottle$log[constants.u.KEY.TRANSITION] = constants.u.TRANSITION.BUTTON_CLICK, 
                                 _creditThrottle$log[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
                                 _creditThrottle$log));
+                            }
+                            console.log("click");
+                            if (silverCreditThrottle) {
+                                var _silverCreditThrottle4;
+                                console.log(silverCreditThrottle);
+                                silverCreditThrottle.log("click", ((_silverCreditThrottle4 = {})[constants.u.KEY.BUTTON_SESSION_UID] = this.props.buttonSessionID, 
+                                _silverCreditThrottle4[constants.u.KEY.CHOSEN_FUNDING] = data && (data.card || data.fundingSource), 
+                                _silverCreditThrottle4));
                             }
                             var _ref5$color = (this.props.style || {}).color, color = void 0 === _ref5$color ? "default" : _ref5$color;
                             Object(beaver_logger_client.k)("button_click_color_" + color);
