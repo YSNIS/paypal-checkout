@@ -1,8 +1,10 @@
 /* @flow */
 
 import { info, track, flush as flushLogs } from 'beaver-logger/client';
+import { getDomain } from 'cross-domain-utils/src';
 
 import { FPTI, BUTTON_COLOR, BUTTON_LAYOUT } from '../constants';
+import { config } from '../config';
 
 import { match } from './util';
 import { getStorageState, getStorageID } from './session';
@@ -131,6 +133,11 @@ export function buildSilverCreditThrottle(props : Object) : ?Throttle {
     }
 
     if (color !== BUTTON_COLOR.SILVER) {
+        return null;
+    }
+
+    let domain = getDomain().replace(/^https?:\/\//, '').replace(/^www\./, '');
+    if (config.silverCreditTest.domains.indexOf(domain) === -1) {
         return null;
     }
 

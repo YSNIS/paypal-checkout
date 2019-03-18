@@ -195,13 +195,7 @@ export let Button : Component<ButtonOptions> = create({
                     window.top.location = extendUrl(config.checkoutUrl, { token });
                 });
             }
-            if (silverCreditThrottle) {
-                console.log(silverCreditThrottle);
-                silverCreditThrottle.log('click', {
-                    [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
-                    [ FPTI.KEY.CHOSEN_FUNDING ]: data && (data.card || data.fundingSource)
-                });
-            }
+            
         });
 
         return (
