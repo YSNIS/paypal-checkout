@@ -134,8 +134,8 @@ function renderContent(text : string, { label, locale, color, branding, logoColo
 
             
             if (isSilverCreditThrottleEnabled && label === 'credit') {
-                color = 'white';
-                logoColor = 'blue';
+                color = BUTTON_COLOR.WHITE;
+                logoColor = BUTTON_COLOR.BLUE;
             }
             
             let logo = (typeof fundingLogos[name] === 'function')
