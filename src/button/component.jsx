@@ -241,10 +241,10 @@ export let Button : Component<ButtonOptions> = create({
             type:     'boolean',
             required: false,
             def(props) : boolean {
-                silverCreditThrottle = silverCreditThrottle || buildSilverCreditThrottle({ ...props, browserLocale: getBrowserLocale()});
+                silverCreditThrottle = silverCreditThrottle || buildSilverCreditThrottle({ ...props, browserLocale: getBrowserLocale() });
                 return silverCreditThrottle && silverCreditThrottle.isEnabled() ? true : false;
             },
-            queryParam: true    
+            queryParam: true
         },
 
         sessionID: {
@@ -841,8 +841,6 @@ export let Button : Component<ButtonOptions> = create({
 
                     info('button_click');
 
-                    console.log('sup')
-
                     track({
                         [ FPTI.KEY.STATE ]:              FPTI.STATE.BUTTON,
                         [ FPTI.KEY.TRANSITION ]:         FPTI.TRANSITION.BUTTON_CLICK,
@@ -850,9 +848,6 @@ export let Button : Component<ButtonOptions> = create({
                         [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
                         [ FPTI.KEY.CHOSEN_FUNDING ]:     data && (data.card || data.fundingSource)
                     });
-
-                    
-
 
                     if (isIEIntranet()) {
                         warn('button_click_intranet_mode');
@@ -874,12 +869,10 @@ export let Button : Component<ButtonOptions> = create({
                         });
                     }
 
-                    console.log('click')
                     if (silverCreditThrottle) {
-                        console.log(silverCreditThrottle);
                         silverCreditThrottle.log('click', {
                             [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
-                            [ FPTI.KEY.CHOSEN_FUNDING ]: data && (data.card || data.fundingSource)
+                            [ FPTI.KEY.CHOSEN_FUNDING ]:     data && (data.card || data.fundingSource)
                         });
                     }
 

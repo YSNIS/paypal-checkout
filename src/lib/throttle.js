@@ -3,7 +3,7 @@
 import { info, track, flush as flushLogs } from 'beaver-logger/client';
 import { getDomain } from 'cross-domain-utils/src';
 
-import { FPTI, BUTTON_COLOR, BUTTON_LAYOUT } from '../constants';
+import { FPTI, BUTTON_COLOR, BUTTON_LAYOUT, BUTTON_LABEL } from '../constants';
 import { config } from '../config';
 
 import { match } from './util';
@@ -121,7 +121,7 @@ export function getReturnToken() : ?string {
 
 export function buildSilverCreditThrottle(props : Object) : ?Throttle {
 
-    let { layout, label, color } = props.style || { layout: undefined, label: undefined };
+    let { layout, label, color } = props.style || { layout: undefined, label: undefined, color: undefined };
     let locale = props.locale || `${ props.browserLocale.lang }_${ props.browserLocale.country }`;
 
     if (locale !== 'en_US') {

@@ -413,7 +413,8 @@ export let config = {
 
     silverCreditTest: {
         domains: [
-            'localhost.paypal.com:5500'
+            'localhost.paypal.com:5500',
+            'localhost.paypal.com:9000'
         ]
     },
 
@@ -899,8 +900,7 @@ export let config = {
     get loggerUrl() : string {
         let isTestExperiment = Math.random() < config.loggerThrottlePercentage;
         let loggerUrl = isTestExperiment ? config.loggerUri : config.hermesLoggerUri;
-        return 'https://www.paypal.com/xoplatform/logger/api/logger';
-        // return `${ config.paypalUrl }${ loggerUrl }`;
+        return `${ config.paypalUrl }${ loggerUrl }`;
     },
 
     get pptmUrl() : string {
