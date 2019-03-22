@@ -1,8 +1,10 @@
 /* @flow */
 
 import { info, track, flush as flushLogs } from 'beaver-logger/client';
+import { getDomain } from 'cross-domain-utils/src';
 
-import { FPTI } from '../constants';
+import { FPTI, BUTTON_COLOR, BUTTON_LAYOUT, BUTTON_LABEL } from '../constants';
+import { config } from '../config';
 
 import { match } from './util';
 import { getStorageState, getStorageID } from './session';
@@ -114,4 +116,35 @@ export function getReturnToken() : ?string {
     if (token && payer) {
         return token;
     }
+}
+
+
+export function buildSilverCreditThrottle(props : Object) : ?Throttle {
+
+    let { layout, label, color } = props.style || { layout: undefined, label: undefined, color: undefined };
+    let locale = props.locale || `${ props.browserLocale.lang }_${ props.browserLocale.country }`;
+
+    if (locale !== 'en_US') {
+        return null;
+    }
+
+    if (label !== undefined && label !== BUTTON_LABEL.CHECKOUT && label !== BUTTON_LABEL.PAYPAL && label !== BUTTON_LABEL.PAY && label !== BUTTON_LABEL.BUYNOW) {
+        return null;
+    }
+
+    if (color !== BUTTON_COLOR.SILVER) {
+        return null;
+    }
+
+    let domain = getDomain().replace(/^https?:\/\//, '').replace(/^www\./, '');
+    if (config.silverCreditTest.domains.indexOf(domain) === -1) {
+        return null;
+    }
+
+    if (layout === undefined || (layout && layout !== BUTTON_LAYOUT.HORIZONTAL)) {
+        return getThrottle('ppc_silver', 50);
+    }
+
+    return null;
+
 }

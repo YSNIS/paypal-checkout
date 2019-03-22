@@ -16,7 +16,7 @@ import { redirect as redir, checkRecognizedBrowser,
     getBrowserLocale, getSessionID, request, getScriptVersion,
     isIEIntranet, isEligible, getCurrentScriptUrl,
     getDomainSetting, extendUrl, isDevice, rememberFunding,
-    getRememberedFunding, memoize, uniqueID, getThrottle, getBrowser } from '../lib';
+    getRememberedFunding, memoize, uniqueID, getThrottle, getBrowser, buildSilverCreditThrottle } from '../lib';
 import { rest, getPaymentOptions, addPaymentDetails, getPaymentDetails } from '../api';
 import { onAuthorizeListener } from '../experiments';
 import { getPaymentType, awaitBraintreeClient,
@@ -106,6 +106,7 @@ function isApmEligible(source, props) : boolean {
 }
 
 let creditThrottle;
+let silverCreditThrottle;
 
 type ButtonOptions = {
     style : {|
@@ -194,6 +195,7 @@ export let Button : Component<ButtonOptions> = create({
                     window.top.location = extendUrl(config.checkoutUrl, { token });
                 });
             }
+            
         });
 
         return (
@@ -231,6 +233,16 @@ export let Button : Component<ButtonOptions> = create({
             required: false,
             def() : string {
                 return window.location.host;
+            },
+            queryParam: true
+        },
+
+        isSilverCreditThrottleEnabled: {
+            type:     'boolean',
+            required: false,
+            def(props) : boolean {
+                silverCreditThrottle = silverCreditThrottle || buildSilverCreditThrottle({ ...props, browserLocale: getBrowserLocale() });
+                return silverCreditThrottle && silverCreditThrottle.isEnabled() ? true : false;
             },
             queryParam: true
         },
@@ -566,6 +578,12 @@ export let Button : Component<ButtonOptions> = create({
                         });
                     }
 
+                    if (silverCreditThrottle) {
+                        silverCreditThrottle.logStart({
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
                     flushLogs();
 
                     return original.apply(this, arguments);
@@ -665,6 +683,13 @@ export let Button : Component<ButtonOptions> = create({
                             [FPTI.KEY.BUTTON_SESSION_UID]: this.props.buttonSessionID
                         });
                     }
+
+                    if (silverCreditThrottle) {
+                        silverCreditThrottle.logComplete({
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
 
                     return ZalgoPromise.try(() => {
 
@@ -841,6 +866,13 @@ export let Button : Component<ButtonOptions> = create({
                             [ FPTI.KEY.STATE ]:              FPTI.STATE.BUTTON,
                             [ FPTI.KEY.TRANSITION ]:         FPTI.TRANSITION.BUTTON_CLICK,
                             [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID
+                        });
+                    }
+
+                    if (silverCreditThrottle) {
+                        silverCreditThrottle.log('click', {
+                            [ FPTI.KEY.BUTTON_SESSION_UID ]: this.props.buttonSessionID,
+                            [ FPTI.KEY.CHOSEN_FUNDING ]:     data && (data.card || data.fundingSource)
                         });
                     }
 

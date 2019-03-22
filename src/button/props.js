@@ -53,7 +53,8 @@ type NormalizedProps = {|
     env : string,
     height : ?number,
     cards : Array<string>,
-    installmentperiod : number
+    installmentperiod : number,
+    isSilverCreditThrottleEnabled : boolean
 |};
 
 export let normalizeProps = memoize((props : Object, defs? : { locale? : LocaleType } = {}) : NormalizedProps => {
@@ -63,7 +64,8 @@ export let normalizeProps = memoize((props : Object, defs? : { locale? : LocaleT
         locale,
         style   = {},
         funding,
-        commit
+        commit,
+        isSilverCreditThrottleEnabled
     } = props;
 
     locale = locale ? parseLocale(locale) : (defs.locale || getButtonConfig('DEFAULT', 'defaultLocale'));
@@ -104,5 +106,5 @@ export let normalizeProps = memoize((props : Object, defs? : { locale? : LocaleT
     let cards = determineEligibleCards({ funding, locale });
 
     return { size, label, locale, color, shape, branding, fundingicons,
-        tagline, funding, layout, sources, max, multiple, env, height, cards, installmentperiod };
+        tagline, funding, layout, sources, max, multiple, env, height, cards, installmentperiod, isSilverCreditThrottleEnabled };
 });
